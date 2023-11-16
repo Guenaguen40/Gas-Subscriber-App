@@ -1,12 +1,13 @@
 package com.soumayaguenaguen.gas_subscriber_app;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import androidx.core.app.NotificationCompat;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,30 +29,33 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private MqttAndroidClient mqttAndroidClient;
 
-    final String serverUri = "tcp://broker.hivemq.com:1883";
+
     String clientId = "soumaya654635135abroker";
-    final String subscriptionTopic = "security/gaz";
-    private static final String CHANNEL_ID = "channel_id";
-    private static final int notificationId = 123;
+    private String subscriptionTopic;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Retrieve data from Intent
+        String brokerAddress = getIntent().getStringExtra("brokerAddress");
+        String port = getIntent().getStringExtra("port");
+        String topic = getIntent().getStringExtra("topic");
+        String threshold = getIntent().getStringExtra("threshold");
+        // Use the data as needed, e.g., initialize MqttService and subscribe to the topic
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Channel Name";
-            String description = "Channel Description";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
+            NotificationChannel channel = new NotificationChannel("channelId", "Channel Name", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
         maintext = findViewById(R.id.maintext);
         handler = new Handler(Looper.getMainLooper());
+        final String serverUri = "tcp://" + brokerAddress + ":" + port;
+        subscriptionTopic = topic;
 
         // Initialize MQTT client
         clientId = clientId + System.currentTimeMillis();
@@ -77,9 +81,29 @@ public class MainActivity extends AppCompatActivity {
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 // Handle incoming message
                 updateUIWithLatestMessage(new String(message.getPayload()));
+
                 // Inside your code where the new value is received
-                showNotification("Test Notification", "This is a test message");
+                showNotification("Gas Value Changed", "New gas value: " + new String(message.getPayload()));
             }
+
+            private void showNotification(String title, String message) {
+                Log.d("Notification", "Building notification. Title: " + title + ", Message: " + message);
+                NotificationCompat.Builder builder =
+                        new NotificationCompat.Builder(MainActivity.this, "channelId")
+                                .setSmallIcon(R.drawable.ic_baseline_fire_extinguisher_24)
+                                .setContentTitle(title)
+                                .setContentText(message)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                builder.setContentIntent(contentIntent);
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(1, builder.build());
+            }
+
+
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
@@ -100,24 +124,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 5000); // Initial delay of 5 seconds
     }
-    public void showNotification(String title, String message) {
-        Log.d("Notification", "Building notification. Title: " + title + ", Message: " + message);
-        // Create an intent for the notification click action
-        // Create an intent for the notification click action
-        Intent intent = new Intent(MainActivity.this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-// Build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setContentIntent(pendingIntent);
 
-// Show the notification
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MainActivity.this);
-        notificationManager.notify(notificationId, builder.build());
 
-    }
 
 
 
