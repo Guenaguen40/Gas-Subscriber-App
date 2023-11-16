@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Gas_Subscriber_App</string>
+    <string name="broker_address">Broker Address</string>
+    <string name="port">Port</string>
+    <string name="topic">Topic</string>
+    <string name="seuil">Seuil</string>
+    <string name="submit">Submit</string>
+    <string name="waiting_for_update">Waiting for Update...</string>
+</resources>
