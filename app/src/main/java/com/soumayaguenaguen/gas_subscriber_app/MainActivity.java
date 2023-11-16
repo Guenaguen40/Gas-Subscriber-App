@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,30 +32,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     String clientId;
-    private String subscriptionTopic; //we kept both variables to add the value received from the intent later
+    private String subscriptionTopic; //we kept both variables empty to add the value received from the SharedPreferences later
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // i am Retrieve data from Intent
-        String brokerAddress = getIntent().getStringExtra("brokerAddress");
-        String port = getIntent().getStringExtra("port");
-        String topic = getIntent().getStringExtra("topic");
-        // i am using this data as received from the user input activity to initialize MqttService and subscribe to the topic
+        // i am Retrieve data from SharedPreferences
+        SharedPreferences preferences = getSharedPreferences("UserData", MODE_PRIVATE);
+        String brokerAddress = preferences.getString("brokerAddress", "");
+        String port = preferences.getString("port", "");
+        String topic = preferences.getString("topic", "");
+        // i am using this data received from the SharedPreferences to initialize MqttService and subscribe to the topic
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("channelId", "Channel Name", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            notificationManager.createNotificationChannel(channel); //this code creates the channel we will be uing for the notfications
         }
 
         maintext = findViewById(R.id.maintext);
         handler = new Handler(Looper.getMainLooper());
-        final String serverUri = "tcp://" + brokerAddress + ":" + port; //i am assigning the received value from the user inputs to the serverUri
-        subscriptionTopic = topic; //this were i assigned the topic value received from the user to the variable
+        final String serverUri = "tcp://" + brokerAddress + ":" + port; //i am assigning the received value from the SharedPreferences to the serverUri
+        subscriptionTopic = topic; //this were i assigned the topic value received from the SharedPreferences to the topic variable
 
         // Initialize MQTT client
         clientId = clientId + System.currentTimeMillis(); // i am using this to ensure that each time we connect to broker we use unique id
