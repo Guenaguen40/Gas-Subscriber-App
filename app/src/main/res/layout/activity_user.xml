@@ -23,11 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/topic"/>
-        <EditText
-            android:id="@+id/seuilEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/seuil"/>
         <Button
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
