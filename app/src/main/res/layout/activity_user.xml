@@ -4,28 +4,96 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="20dp"
     tools:context=".UserActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:text="Welcome!" />
+
+    <TextView
+        android:layout_width="346dp"
+        android:layout_height="209dp"
+        android:layout_marginTop="25dp"
+        android:text="Please fill in the following details to connect to your MQTT broker.Ensure the accuracy of the information for a successful connection.If you don't have the necessary credentials, contact your system administrator or refer to the MQTT broker documentation. Thank you!"
+        android:textSize="19sp" />
 
         <EditText
             android:id="@+id/brokerAddressEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/edittext_background"
+            android:layout_marginTop="55dp"
+            android:paddingStart="16dp"
             android:hint="@string/broker_address"/>
+
+    <TextView
+        android:id="@+id/hintbroker"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Hint: Enter the address of your MQTT broker, e.g., mqtt.example.com"
+        android:textColor="#939393"
+        android:textSize="11sp" />
+
         <EditText
             android:id="@+id/portEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/edittext_background"
+            android:layout_marginTop="10dp"
+            android:paddingStart="16dp"
             android:hint="@string/port"/>
+    <TextView
+        android:id="@+id/hintport"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Hint: Specify the port number for the MQTT broker, e.g., 1883"
+        android:textColor="#939393"
+        android:textSize="11sp" />
+
         <EditText
             android:id="@+id/topicEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/edittext_background"
+            android:layout_marginTop="10dp"
+            android:paddingStart="16dp"
             android:hint="@string/topic"/>
+    <TextView
+        android:id="@+id/hintbutton"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Hint: Specify the MQTT topic you want to subscribe to, e.g., sensors/temperature"
+        android:textColor="#939393"
+        android:textSize="11sp" />
+
         <Button
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/edittext_background"
+            android:layout_marginTop="19dp"
             android:text="@string/submit"/>
-    </LinearLayout>
+
+    <TextView
+        android:id="@+id/hittopic"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Hint: We will Save your credentials for future connections."
+        android:textColor="#939393"
+        android:textSize="11sp" />
+</LinearLayout>

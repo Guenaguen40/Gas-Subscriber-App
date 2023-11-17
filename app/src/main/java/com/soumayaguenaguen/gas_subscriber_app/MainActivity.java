@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import androidx.core.app.NotificationCompat;
+import android.view.View;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GaugeView gaugeView = findViewById(R.id.GaugeView);
+
         // i am Retrieve data from SharedPreferences
         SharedPreferences preferences = getSharedPreferences("UserData", MODE_PRIVATE);
         String brokerAddress = preferences.getString("brokerAddress", "");
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // once we receive a new value we notify the user by launching the showNotification function
                 showNotification("Gas Value Changed", "New gas value: " + new String(message.getPayload()));
+
+                gaugeView.setValue(Float.parseFloat(new String(message.getPayload()))); // Set the value you want to display on the gauge
+
             }
 
             private void showNotification(String title, String message) {
@@ -206,5 +212,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void onChangeBrokerButtonClick(View view) {
+        // this will Clear user data from shared preferences
+        SharedPreferences preferences = getSharedPreferences("UserData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+
+        // this will let the user navigate back to the userActivity
+        Intent intent = new Intent(this, UserActivity.class);
+        startActivity(intent);
+        finish(); // this will finish the current activity to prevent it from going back to mainActivity
     }
 }
